@@ -1,11 +1,14 @@
 """Hybrid ticket analysis: optional OpenAI intelligence with a deterministic fallback."""
 
+import logging
 import os
 import re
 from dataclasses import dataclass
 from typing import Literal
 
 from pydantic import BaseModel, Field
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -86,9 +89,9 @@ def analyze_ticket(subject: str, message: str) -> TicketAnalysis:
                 os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
             )
             return TicketAnalysis(**result.model_dump())
-        except Exception:
-            # Keep ticket intake available if the provider is unavailable or returns bad data.
-            pass
+        except Exception as exc:  # noqa: BLE001
+            # Keep ticket intake available; log only the exception type, never credentials or payloads.
+            logger.warning("AI analysis unavailable; using deterministic fallback (%s)", type(exc).__name__)
 
     text = f"{subject} {message}".lower()
     words = set(re.findall(r"[a-z']+", text))
