@@ -1,5 +1,6 @@
 """API request and response schemas."""
 
+from typing import Literal
 from pydantic import BaseModel, Field
 
 
@@ -16,3 +17,15 @@ class TicketAnalysisResponse(BaseModel):
     rationale: list[str]
     suggested_reply: str
     requires_human_review: bool = True
+
+
+class TicketRecord(TicketAnalysisResponse):
+    id: int
+    subject: str
+    message: str
+    status: Literal["open", "in_progress", "resolved"]
+    created_at: str
+
+
+class TicketStatusUpdate(BaseModel):
+    status: Literal["open", "in_progress", "resolved"]
