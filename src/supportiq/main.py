@@ -5,11 +5,13 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 
-from supportiq import __version__
-from supportiq import database
+from supportiq import __version__, database
 from supportiq.analyzer import analyze_ticket
 from supportiq.schemas import (
-    TicketAnalysisResponse, TicketRecord, TicketRequest, TicketStatusUpdate,
+    TicketAnalysisResponse,
+    TicketRecord,
+    TicketRequest,
+    TicketStatusUpdate,
 )
 
 app = FastAPI(
