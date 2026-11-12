@@ -77,9 +77,9 @@ def _analyze_with_openai(subject: str, message: str, api_key: str, model: str) -
     return response.output_parsed
 
 
-def analyze_ticket(subject: str, message: str) -> TicketAnalysis:
+def analyze_ticket(subject: str, message: str, *, use_ai: bool = True) -> TicketAnalysis:
     """Use OpenAI when configured; safely fall back to transparent local rules."""
-    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    api_key = os.getenv("OPENAI_API_KEY", "").strip() if use_ai else ""
     if api_key:
         try:
             result = _analyze_with_openai(
