@@ -1,7 +1,6 @@
 from fastapi.testclient import TestClient
 
-from supportiq import database
-from supportiq import analyzer
+from supportiq import analyzer, database
 from supportiq.analyzer import AIAnalysis
 from supportiq.main import app
 
