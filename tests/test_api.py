@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from supportiq import database
 from supportiq.main import app
 
 client = TestClient(app)
@@ -43,3 +44,26 @@ def test_empty_message_is_rejected():
         json={"subject": "Help", "message": ""},
     )
     assert response.status_code == 422
+
+
+def test_ticket_is_saved_listed_and_status_updated(tmp_path, monkeypatch):
+    monkeypatch.setattr(database, "DB_PATH", tmp_path / "test.db")
+    created = client.post(
+        "/api/v1/tickets",
+        json={"subject": "Login issue", "message": "I cannot sign in to my account."},
+    )
+    assert created.status_code == 201
+    ticket = created.json()
+    assert ticket["id"] == 1
+    assert client.get("/api/v1/tickets").json()[0]["subject"] == "Login issue"
+    assert client.get("/api/v1/dashboard/stats").json()["open"] == 1
+
+    updated = client.patch("/api/v1/tickets/1", json={"status": "in_progress"})
+    assert updated.status_code == 200
+    assert updated.json()["status"] == "in_progress"
+    assert client.get("/api/v1/dashboard/stats").json()["in_progress"] == 1
+
+
+def test_missing_ticket_update_returns_404():
+    response = client.patch("/api/v1/tickets/999", json={"status": "resolved"})
+    assert response.status_code == 404
