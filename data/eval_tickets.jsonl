@@ -1,0 +1,18 @@
+{"id":"billing-01","subject":"Duplicate charge on my card","message":"I was charged twice and I am angry. Please refund the extra payment ASAP.","category":"billing","sentiment":"negative","urgency":"high"}
+{"id":"billing-02","subject":"Subscription invoice","message":"Could you send me the invoice for my monthly subscription? Thanks.","category":"billing","sentiment":"positive","urgency":"normal"}
+{"id":"billing-03","subject":"Payment failed","message":"My payment failed and this is a terrible problem. I need help immediately.","category":"billing","sentiment":"negative","urgency":"high"}
+{"id":"technical-01","subject":"Application crash","message":"The app is broken and crashes every time. This is frustrating and urgent.","category":"technical","sentiment":"negative","urgency":"high"}
+{"id":"technical-02","subject":"Feature question","message":"How do I use the export feature? Thank you for your help.","category":"general","sentiment":"positive","urgency":"normal"}
+{"id":"technical-03","subject":"Login page error","message":"I get an error when I sign in. The page is not working and I am disappointed.","category":"technical","sentiment":"negative","urgency":"high"}
+{"id":"account-01","subject":"Locked out of account","message":"I am locked out of my account and cannot access my work. Please help immediately.","category":"account","sentiment":"neutral","urgency":"high"}
+{"id":"account-02","subject":"Change password","message":"Please tell me how to change my password. Thanks, you are helpful.","category":"account","sentiment":"positive","urgency":"normal"}
+{"id":"account-03","subject":"Account access problem","message":"I cannot sign in and this is a terrible issue. I am angry.","category":"account","sentiment":"negative","urgency":"high"}
+{"id":"shipping-01","subject":"Where is my package?","message":"My package delivery is late and I am frustrated. Please check the tracking.","category":"shipping","sentiment":"negative","urgency":"high"}
+{"id":"shipping-02","subject":"Order tracking","message":"Could you share the tracking details for my shipment? Thank you.","category":"shipping","sentiment":"positive","urgency":"normal"}
+{"id":"shipping-03","subject":"Wrong delivery address","message":"The order was sent to the wrong address. This is unacceptable and I am angry.","category":"shipping","sentiment":"negative","urgency":"high"}
+{"id":"general-01","subject":"Product feedback","message":"I love the service. The support team was wonderful and helpful.","category":"general","sentiment":"positive","urgency":"normal"}
+{"id":"general-02","subject":"General question","message":"Hello, I have a question about your business hours.","category":"general","sentiment":"neutral","urgency":"normal"}
+{"id":"general-03","subject":"Very unhappy","message":"I am disappointed and frustrated. This is terrible and unacceptable.","category":"general","sentiment":"negative","urgency":"high"}
+{"id":"edge-01","subject":"Urgent data loss","message":"We have critical data loss and cannot work. This is an emergency.","category":"general","sentiment":"neutral","urgency":"high"}
+{"id":"edge-02","subject":"Thanks for the refund","message":"Thank you, the refund was received and everything is perfect now.","category":"billing","sentiment":"positive","urgency":"normal"}
+{"id":"edge-03","subject":"Account password reset","message":"I need help with my account password reset, please.","category":"account","sentiment":"positive","urgency":"normal"}
