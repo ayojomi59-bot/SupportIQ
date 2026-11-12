@@ -69,6 +69,31 @@ tests/               Automated tests (no live API key required)
 - [ ] Knowledge-base retrieval and cited answer suggestions
 - [ ] Evaluation dataset and quality metrics
 
+
+## Evaluation and quality checks
+
+SupportIQ includes a small, version-controlled labelled ticket set and a local evaluation runner. The examples are curated for software testing; they are not real customer records, a statistically representative production sample, or independent human-verified benchmark labels.
+
+Install the development dependencies, then run the deterministic baseline:
+
+```bash
+python scripts/evaluate.py --baseline
+```
+
+If `OPENAI_API_KEY` is configured, run the AI-backed analyzer against the same examples:
+
+```bash
+python scripts/evaluate.py
+```
+
+The JSON report includes:
+- Exact-match accuracy across category, sentiment, and urgency together.
+- Per-field accuracy and macro F1.
+- Per-class precision, recall, F1, and support.
+- Individual examples where one or more predictions differ from the reference labels.
+
+To enforce a local regression threshold, add `--min-exact-match 0.80`. This is a configurable gate, not a claim of production accuracy. Review misclassified examples and have a support-domain reviewer validate or revise labels before treating this dataset as a benchmark.
+
 ## Development
 
 ```bash
