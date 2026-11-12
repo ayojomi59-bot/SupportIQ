@@ -1,7 +1,7 @@
 """Explainable baseline ticket analysis using transparent keyword signals."""
 
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -29,7 +29,10 @@ POSITIVE_WORDS = {
     "amazing", "excellent", "happy", "helpful", "love", "perfect", "please",
     "thanks", "thank", "wonderful", "great",
 }
-URGENT_WORDS = ("asap", "immediately", "urgent", "emergency", "critical", "cannot work", "locked out", "data loss")
+URGENT_WORDS = (
+    "asap", "immediately", "urgent", "emergency", "critical",
+    "cannot work", "locked out", "data loss",
+)
 
 
 def analyze_ticket(subject: str, message: str) -> TicketAnalysis:
