@@ -1,6 +1,8 @@
 from fastapi.testclient import TestClient
 
 from supportiq import database
+from supportiq import analyzer
+from supportiq.analyzer import AIAnalysis
 from supportiq.main import app
 
 client = TestClient(app)
@@ -12,7 +14,8 @@ def test_health_endpoint():
     assert response.json()["status"] == "ok"
 
 
-def test_billing_ticket_is_classified_and_review_flagged():
+def test_billing_ticket_is_classified_and_review_flagged(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     response = client.post(
         "/api/v1/tickets/analyze",
         json={
@@ -29,7 +32,8 @@ def test_billing_ticket_is_classified_and_review_flagged():
     assert data["suggested_reply"]
 
 
-def test_unknown_ticket_falls_back_to_general():
+def test_unknown_ticket_falls_back_to_general(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     response = client.post(
         "/api/v1/tickets/analyze",
         json={"subject": "Hello", "message": "I have a question."},
@@ -47,6 +51,7 @@ def test_empty_message_is_rejected():
 
 
 def test_ticket_is_saved_listed_and_status_updated(tmp_path, monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.setattr(database, "DB_PATH", tmp_path / "test.db")
     created = client.post(
         "/api/v1/tickets",
@@ -67,3 +72,40 @@ def test_ticket_is_saved_listed_and_status_updated(tmp_path, monkeypatch):
 def test_missing_ticket_update_returns_404():
     response = client.patch("/api/v1/tickets/999", json={"status": "resolved"})
     assert response.status_code == 404
+
+
+def test_openai_analysis_is_used_when_configured(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("OPENAI_MODEL", "test-model")
+    expected = AIAnalysis(
+        category="billing",
+        sentiment="negative",
+        urgency="high",
+        confidence=0.93,
+        rationale=["Customer reports an unresolved refund."],
+        suggested_reply="We’re sorry about the delay. Our team will review this with you.",
+    )
+    calls = {}
+
+    def fake_provider(subject, message, api_key, model):
+        calls.update(subject=subject, message=message, api_key=api_key, model=model)
+        return expected
+
+    monkeypatch.setattr(analyzer, "_analyze_with_openai", fake_provider)
+    result = analyzer.analyze_ticket("Refund delay", "Where is my refund?")
+    assert result.category == "billing"
+    assert result.confidence == 0.93
+    assert calls["api_key"] == "test-key"
+    assert calls["model"] == "test-model"
+
+
+def test_openai_failure_uses_deterministic_fallback(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+
+    def failing_provider(*args, **kwargs):
+        raise RuntimeError("provider unavailable")
+
+    monkeypatch.setattr(analyzer, "_analyze_with_openai", failing_provider)
+    result = analyzer.analyze_ticket("Refund not received", "I am frustrated and still waiting.")
+    assert result.category == "billing"
+    assert result.urgency == "high"
